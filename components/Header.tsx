@@ -1,7 +1,5 @@
 'use client'
 
-import { Activity } from 'lucide-react'
-
 export default function Header() {
   return (
     <header className="border-b border-gray-800 bg-black sticky top-0 z-50">

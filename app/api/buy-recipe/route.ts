@@ -163,7 +163,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Extract headers from incoming request
     const authHeader = request.headers.get('authorization')
     const mppToken = request.headers.get('x-mpp-token')
-    const mppPaymentIntent = request.headers.get('x-mpp-payment-intent')
 
     // Parse request body (if present)
     let requestBody: Record<string, unknown> = {}
