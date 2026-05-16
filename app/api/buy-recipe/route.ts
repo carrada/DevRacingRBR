@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
+ * CORS Headers Configuration
+ * Allows agents from any origin to make requests to this API
+ */
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-mpp-token',
+}
+
+/**
  * Profit Recipe: Hardware B2B to D2C Arbitrage
  * 
  * This Markdown document contains the complete arbitrage strategy,
@@ -209,7 +219,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           },
           retry_after: 3600,
         },
-        { status: 402 }
+        { status: 402, headers: CORS_HEADERS }
       )
     }
 
@@ -230,7 +240,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         },
         access_token: generateAccessToken(),
       },
-      { status: 200 }
+      { status: 200, headers: CORS_HEADERS }
     )
   } catch (error) {
     // Error handling: Log and return 500 Internal Server Error
@@ -242,9 +252,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         message: 'An unexpected error occurred while processing your request',
         status: 'failed',
       },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     )
   }
+}
+
+/**
+ * OPTIONS /api/buy-recipe
+ *
+ * Handles CORS preflight requests
+ * Returns 200 OK with CORS headers to allow cross-origin requests
+ */
+export async function OPTIONS(): Promise<NextResponse> {
+  return new NextResponse(null, {
+    status: 200,
+    headers: CORS_HEADERS,
+  })
 }
 
 /**

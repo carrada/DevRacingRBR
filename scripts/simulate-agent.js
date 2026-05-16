@@ -25,7 +25,7 @@ const COLORS = {
 
 // Configuration
 const CONFIG = {
-  BASE_URL: 'http://localhost:3000',
+  BASE_URL: 'https://arb-yield.vercel.app',
   ENDPOINT: '/api/buy-recipe',
   PAYMENT_SIMULATION_DELAY: 1500, // 1.5 seconds
   RECIPE_PREVIEW_LENGTH: 200,
