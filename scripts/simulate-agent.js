@@ -86,7 +86,23 @@ async function attemptWithoutPayment() {
       },
     });
 
-    const data = await response.json();
+    // Validar que la respuesta sea JSON
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      log(
+        `❌ ERROR: Respuesta no es JSON válido: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+        COLORS.RED
+      );
+      return null;
+    }
+
+    // Validar estructura de respuesta
+    if (!data || typeof data !== 'object') {
+      log(`❌ ERROR: Respuesta no es un objeto JSON válido`, COLORS.RED);
+      return null;
+    }
 
     log(`Respuesta recibida: HTTP ${response.status}`, COLORS.BLUE);
 
@@ -102,13 +118,16 @@ async function attemptWithoutPayment() {
     log(`✓ Status 402 detectado. Pago requerido.`, COLORS.GREEN);
     log(`Extrayendo URL de pago y precio...`, COLORS.YELLOW);
 
-    // Extract payment details
+    // Extract payment details with validation
     const paymentUrl = data.mpp_payment_url;
     const price = data.price;
     const currency = data.currency;
 
-    if (!paymentUrl || !price) {
+    if (!paymentUrl || !price || !currency) {
       log(`❌ ERROR: Datos de pago incompletos en respuesta`, COLORS.RED);
+      log(`  - mpp_payment_url: ${paymentUrl ? '✓' : '✗'}`, COLORS.RED);
+      log(`  - price: ${price ? '✓' : '✗'}`, COLORS.RED);
+      log(`  - currency: ${currency ? '✓' : '✗'}`, COLORS.RED);
       return null;
     }
 
@@ -122,7 +141,7 @@ async function attemptWithoutPayment() {
       currency,
     };
   } catch (error) {
-    log(`❌ ERROR en Intento 1: ${error.message}`, COLORS.RED);
+    log(`❌ ERROR en Intento 1: ${error instanceof Error ? error.message : 'Unknown error'}`, COLORS.RED);
     return null;
   }
 }
@@ -146,7 +165,23 @@ async function attemptWithPayment(authToken) {
       },
     });
 
-    const data = await response.json();
+    // Validar que la respuesta sea JSON
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      log(
+        `❌ ERROR: Respuesta no es JSON válido: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+        COLORS.RED
+      );
+      return null;
+    }
+
+    // Validar estructura de respuesta
+    if (!data || typeof data !== 'object') {
+      log(`❌ ERROR: Respuesta no es un objeto JSON válido`, COLORS.RED);
+      return null;
+    }
 
     log(`Respuesta recibida: HTTP ${response.status}`, COLORS.BLUE);
 
@@ -162,10 +197,10 @@ async function attemptWithPayment(authToken) {
     log(`✓ HTTP 200 OK - Pago verificado`, COLORS.GREEN);
     log(`Mensaje: ${data.message}`, COLORS.GREEN);
 
-    // Extract recipe data
+    // Extract recipe data with validation
     const recipe = data.data;
-    if (!recipe) {
-      log(`❌ ERROR: Datos de receta no encontrados en respuesta`, COLORS.RED);
+    if (!recipe || typeof recipe !== 'string') {
+      log(`❌ ERROR: Datos de receta no encontrados o inválidos en respuesta`, COLORS.RED);
       return null;
     }
 
@@ -179,7 +214,7 @@ async function attemptWithPayment(authToken) {
       accessToken: data.access_token,
     };
   } catch (error) {
-    log(`❌ ERROR en Intento 2: ${error.message}`, COLORS.RED);
+    log(`❌ ERROR en Intento 2: ${error instanceof Error ? error.message : 'Unknown error'}`, COLORS.RED);
     return null;
   }
 }

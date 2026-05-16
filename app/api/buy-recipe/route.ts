@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 /**
  * CORS Headers Configuration
@@ -11,152 +14,52 @@ const CORS_HEADERS = {
 }
 
 /**
+ * Load Profit Recipe from file system
+ * Compatible with Vercel serverless environment using process.cwd()
+ */
+function loadProfitRecipe(): string {
+  try {
+    const filePath = join(process.cwd(), 'data', 'profit-recipe.md')
+    const content = readFileSync(filePath, 'utf-8')
+    return content
+  } catch (error) {
+    console.error('[MPP API] Failed to load profit recipe:', error)
+    // Fallback to embedded recipe if file read fails
+    return `# Receta: Raspberry Pi 5 (4GB) Hardware Arbitrage
+
+## Arbitraje Retail B2B/Especializado → MercadoLibre D2C
+> **Documento creado**: 2026-05-16
+> **Para**: Cris / Agentes de IA (capital $250-500 USD, vendedor MX)
+> **Producto**: Raspberry Pi 5 (4GB RAM) - Placa de desarrollo / Edge AI
+
+---
+
+## TL;DR (lee esto primero)
+
+| Concepto | Valor |
+|---|---|
+| **Inversión inicial recomendada** | $276 USD (~$4,700 MXN) por 3 unidades |
+| **Profit realista por batch de 3u** | $80 - $90 USD netos |
+| **Profit optimista (sell-through 100% + Q4 demand)** | $120 USD netos |
+| **ROI esperado** | 28% - 43% sobre capital invertido (rotación rápida) |
+| **Tiempo: orden a primera venta** | 5-7 días (envío nacional) |
+| **Tiempo: ciclo completo del batch** | 10-15 días |
+| **Riesgo** | Muy Bajo — Hardware estandarizado, sin riesgo de aduanas, demanda inelástica en CS/Devs |
+| **Ventana de oportunidad** | Perenne. Picos en inicio de semestres universitarios y boom de IA local. |
+
+⚠️ **Aviso importante**: La asimetría de precios no se basa en traer barato de China, sino en un "Distribution Gap" geográfico.`
+  }
+}
+
+/**
  * Profit Recipe: Hardware B2B to D2C Arbitrage
- * 
+ *
  * This Markdown document contains the complete arbitrage strategy,
  * including supplier sources, pricing analysis, logistics, and execution timeline.
  * Designed for AI agents to execute autonomous arbitrage operations.
  */
-const PROFIT_RECIPE_MARKDOWN = `# Arb-Yield: Hardware B2B to D2C Arbitrage Recipe
+const PROFIT_RECIPE_MARKDOWN = loadProfitRecipe()
 
-## Executive Summary
-This recipe outlines a verified arbitrage opportunity in the edge computing hardware market.
-Buy from B2B suppliers at wholesale prices and distribute directly to consumers (D2C) with 40-60% margins.
-
-## Market Analysis
-
-### Target Product Category
-- **Category**: Edge Computing Modules (Industrial IoT Gateways)
-- **Supplier Tier**: B2B Wholesale (Alibaba, Global Sources, Direct Manufacturers)
-- **Consumer Market**: D2C via Amazon, eBay, Shopify
-
-### Pricing Structure
-- **B2B Wholesale Price**: $45-65 USD per unit (MOQ: 10 units)
-- **D2C Retail Price**: $129-149 USD per unit
-- **Gross Margin**: 100-230% markup
-- **Net Margin After Costs**: 40-60%
-
-## Execution Timeline
-
-### Phase 1: Supplier Identification (Days 1-2)
-1. Source 3-5 verified B2B suppliers on Alibaba
-2. Request quotes for MOQ (10-20 units)
-3. Verify supplier credentials (Trade Assurance, reviews, certifications)
-4. Negotiate bulk pricing
-
-### Phase 2: Logistics Planning (Days 2-3)
-1. Calculate shipping costs (DDP or FOB)
-2. Estimate customs clearance time (2-3 days)
-3. Plan D2C fulfillment (FBA, 3PL, or direct shipping)
-4. Budget for packaging and labeling
-
-### Phase 3: Market Preparation (Days 3-4)
-1. Create product listings on D2C channels
-2. Set competitive pricing ($129-149 range)
-3. Prepare marketing materials
-4. Configure payment processing
-
-### Phase 4: Execution (Days 5-7)
-1. Place B2B order with selected supplier
-2. Arrange payment (T/T, Escrow, or Trade Assurance)
-3. Track shipment and customs clearance
-4. Receive inventory and quality check
-5. List products on D2C channels
-6. Begin fulfillment and customer service
-
-## Financial Projection
-
-### Investment Breakdown
-- **Product Cost**: $50 × 15 units = $750
-- **Shipping (B2B to Warehouse)**: $150
-- **Customs & Duties**: $100
-- **Packaging & Labeling**: $75
-- **D2C Fulfillment Setup**: $50
-- **Total Initial Investment**: $1,125
-
-### Revenue Projection
-- **D2C Sales**: 15 units × $135 (avg) = $2,025
-- **Gross Revenue**: $2,025
-- **Total Costs**: $1,125
-- **Net Profit**: $900
-- **ROI**: 80% (single cycle)
-
-## Risk Mitigation
-
-### Supplier Risk
-- Use Trade Assurance or Escrow payment
-- Request product samples before bulk order
-- Verify certifications and compliance
-
-### Logistics Risk
-- Track shipment in real-time
-- Arrange insurance for high-value goods
-- Have backup suppliers identified
-
-### Market Risk
-- Monitor competitor pricing daily
-- Adjust D2C pricing based on demand
-- Prepare for returns and refunds (budget 5%)
-
-## Key Metrics to Monitor
-
-| Metric | Target | Frequency |
-|--------|--------|-----------|
-| Supplier Response Time | < 24h | Daily |
-| Shipping Time | 5-7 days | Per shipment |
-| D2C Conversion Rate | > 2% | Daily |
-| Customer Satisfaction | > 4.5/5 | Per order |
-| Inventory Turnover | 7-10 days | Weekly |
-
-## Tools & Resources
-
-### B2B Sourcing
-- Alibaba.com (Trade Assurance)
-- Global Sources
-- Direct manufacturer contacts
-
-### D2C Channels
-- Amazon FBA
-- eBay
-- Shopify store
-- WooCommerce
-
-### Logistics
-- DHL, FedEx, UPS (International)
-- Local 3PL providers
-- Customs brokers
-
-### Payment Processing
-- Stripe
-- PayPal
-- Square
-
-## Compliance & Legal
-
-- Verify product certifications (CE, FCC, RoHS)
-- Ensure proper import documentation
-- Comply with consumer protection laws
-- Maintain warranty and return policies
-- Document all transactions for tax purposes
-
-## Next Steps
-
-1. **Week 1**: Identify and contact 5 B2B suppliers
-2. **Week 2**: Negotiate pricing and MOQ
-3. **Week 3**: Prepare D2C infrastructure
-4. **Week 4**: Execute first arbitrage cycle
-5. **Week 5+**: Scale and optimize
-
----
-
-**Recipe Version**: 1.0  
-**Last Updated**: 2024-05-16  
-**Verification Status**: ✓ Verified  
-**Success Rate**: 87% (based on 23 executed cycles)  
-**Average ROI**: 65-75% per cycle  
-
-*This recipe is for educational purposes. Conduct your own due diligence before executing.*
-`
 
 /**
  * POST /api/buy-recipe
@@ -170,29 +73,53 @@ Buy from B2B suppliers at wholesale prices and distribute directly to consumers 
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // Extract headers from incoming request
-    const authHeader = request.headers.get('authorization')
-    const mppToken = request.headers.get('x-mpp-token')
+    // Extract headers from incoming request with null coalescing
+    const authHeader = request.headers.get('authorization') || ''
+    const mppToken = request.headers.get('x-mpp-token') || ''
 
-    // Parse request body (if present)
+    // Parse request body with strict validation
     let requestBody: Record<string, unknown> = {}
     try {
-      requestBody = await request.json()
-    } catch {
-      // Body is optional for this endpoint
+      const contentType = request.headers.get('content-type') || ''
+      if (contentType.includes('application/json')) {
+        try {
+          requestBody = await request.json()
+        } catch (parseError) {
+          // JSON malformado con Content-Type: application/json
+          return NextResponse.json(
+            {
+              error: 'Bad Request',
+              message: 'Invalid JSON in request body',
+              details: parseError instanceof Error ? parseError.message : 'Unknown parse error',
+              status: 'failed',
+            },
+            { status: 400, headers: CORS_HEADERS }
+          )
+        }
+      }
+    } catch (error) {
+      // Fallback para errores inesperados en parsing
+      return NextResponse.json(
+        {
+          error: 'Bad Request',
+          message: 'Failed to parse request',
+          status: 'failed',
+        },
+        { status: 400, headers: CORS_HEADERS }
+      )
     }
 
     /**
      * VALIDATION LOGIC: Check for valid payment token
-     * 
+     *
      * For hackathon purposes, we accept:
-     * - Any non-empty authorization header (Bearer token)
-     * - Any non-empty x-mpp-token header
+     * - Authorization header with "Bearer " prefix (minimum 7 chars after Bearer)
+     * - Non-empty x-mpp-token header
      * - mpp_payment_intent: true in request body
      */
     const hasValidPaymentToken =
-      (authHeader && authHeader.startsWith('Bearer ')) ||
-      (mppToken && mppToken.length > 0) ||
+      (authHeader.trim().startsWith('Bearer ') && authHeader.trim().length > 7) ||
+      (mppToken.trim().length > 0) ||
       (requestBody.mpp_payment_intent === true)
 
     // CAMINO A: No Payment Token → Return HTTP 402 Payment Required
@@ -201,10 +128,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           error: 'Payment Required',
           message: 'This resource requires payment via Machine Payments Protocol (HTTP 402)',
-          price: '99.99',
+          price: '1.00',
+          price_description: 'One-time access to complete arbitrage recipe and playbook',
+          price_unit: 'USD per access',
           currency: 'USD',
           product: 'arb-yield-recipe',
-          mpp_payment_url: 'https://pay.mpp.dev/checkout?product=arb-yield-recipe&amount=99.99',
+          mpp_payment_url: 'https://pay.mpp.dev/checkout?product=arb-yield-recipe&amount=1.00',
           payment_instructions: {
             method: 'POST',
             endpoint: 'https://api.arb-yield.com/buy-recipe',
@@ -218,6 +147,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             },
           },
           retry_after: 3600,
+          status: 'payment_required',
         },
         { status: 402, headers: CORS_HEADERS }
       )
@@ -235,6 +165,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           format: 'markdown',
           size_bytes: PROFIT_RECIPE_MARKDOWN.length,
           checksum: generateChecksum(PROFIT_RECIPE_MARKDOWN),
+          checksum_algorithm: 'sha256',
           timestamp: new Date().toISOString(),
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
         },
@@ -271,17 +202,11 @@ export async function OPTIONS(): Promise<NextResponse> {
 }
 
 /**
- * Utility: Generate a simple checksum for the recipe
+ * Utility: Generate SHA-256 checksum for the recipe
  * Used for integrity verification by the client
  */
 function generateChecksum(data: string): string {
-  let hash = 0
-  for (let i = 0; i < data.length; i++) {
-    const char = data.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash // Convert to 32bit integer
-  }
-  return Math.abs(hash).toString(16)
+  return crypto.createHash('sha256').update(data).digest('hex')
 }
 
 /**

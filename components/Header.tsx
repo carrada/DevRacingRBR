@@ -12,8 +12,15 @@ export default function Header() {
             <p className="text-gray-500 text-sm mt-2">Machine Payments Protocol Enabled</p>
           </div>
           
-          <div className="flex items-center gap-3 px-4 py-2 border border-terminal rounded bg-black">
-            <div className="w-2 h-2 bg-terminal rounded-full animate-blink"></div>
+          <div
+            className="flex items-center gap-3 px-4 py-2 border border-terminal rounded bg-black"
+            role="status"
+            aria-label="MPP Endpoint Status: Active"
+          >
+            <div
+              className="w-2 h-2 bg-terminal rounded-full animate-blink"
+              aria-hidden="true"
+            ></div>
             <span className="text-terminal text-sm font-mono">MPP Endpoint: ACTIVE</span>
           </div>
         </div>
